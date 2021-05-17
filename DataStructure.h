@@ -173,6 +173,7 @@ public:
     State extract()
     {
         auto head = ds.front();
+
         ds.pop();
         return head;
     }
