@@ -159,3 +159,36 @@ public:
         return manhattanDistance(state.grid);
     }
 };
+
+class BFS : public DataStructure
+{
+public:
+    queue<State> ds;
+
+    void add(State state) 
+    {
+        ds.push(state);
+    }
+    
+    State extract()
+    {
+        auto head = ds.front();
+        ds.pop();
+        return head;
+    }
+
+    int size ()
+    {
+        return ds.size();
+    }
+
+    bool isEmpty()
+    {
+        return ds.empty();
+    }
+
+    int cost(State state)
+    {
+        return state.depth;
+    }
+};
