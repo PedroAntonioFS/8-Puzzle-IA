@@ -126,3 +126,36 @@ public:
         return manhattanDistance(state.grid) + state.depth;
     }
 };
+
+class Greedy : public DataStructure
+{
+public:
+    priority_queue<State> ds;
+
+    void add(State state) 
+    {
+        ds.push(state);
+    }
+    
+    State extract()
+    {
+        auto head = ds.top();
+        ds.pop();
+        return head;
+    }
+
+    int size ()
+    {
+        return ds.size();
+    }
+
+    bool isEmpty()
+    {
+        return ds.empty();
+    }
+
+    int cost(State state)
+    {
+        return manhattanDistance(state.grid);
+    }
+};
