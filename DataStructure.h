@@ -92,6 +92,7 @@ public:
     virtual int size () {}
     virtual bool isEmpty() {}
     virtual int cost(State state) {}
+    virtual string name() {}
 };
 
 class ASTAR : public DataStructure
@@ -125,6 +126,11 @@ public:
     {
         return manhattanDistance(state.grid) + state.depth;
     }
+
+    string name()
+    {
+        return "A STAR";
+    }
 };
 
 class Greedy : public DataStructure
@@ -157,6 +163,11 @@ public:
     int cost(State state)
     {
         return manhattanDistance(state.grid);
+    }
+
+    string name()
+    {
+        return "GREEDY";
     }
 };
 
@@ -192,6 +203,11 @@ public:
     {
         return state.depth;
     }
+
+    string name()
+    {
+        return "BFS";
+    }
 };
 
 class DFS : public DataStructure
@@ -225,5 +241,10 @@ public:
     int cost(State state)
     {
         return state.depth;
+    }
+
+    string name()
+    {
+        return "DFS";
     }
 };

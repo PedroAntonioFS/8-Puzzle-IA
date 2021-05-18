@@ -2,6 +2,7 @@
 #include "DataStructure.h"
 #define pii pair<int, int>
 #define LIMIT_DEPTH  500
+#define ll long long
 
 using namespace std;
 using namespace std::this_thread;
@@ -12,6 +13,12 @@ int dy[] = {1, -1, 0, 0};
 Moves moves[] = {Left, Right, Top, Down};
 
 unordered_set<string> visited;
+
+
+//Report
+ll duration_time;
+int duplicatedNodes, solutionDepth, maxDepth;
+bool solved;
 
 bool isValidPosition(pii position)
 {
@@ -35,7 +42,7 @@ void move(pii current, int i, State currentState, DataStructure &ds)
 
     if (visited.count(newState.key) || newState.depth > LIMIT_DEPTH)
     {
-        //TODO
+        duplicatedNodes++;
         return;
     }
 
@@ -100,53 +107,105 @@ void solve (State state)
 
 void search(State &initialState, DataStructure &ds)
 {
-    visited.clear();
-
-    ds.add(initialState);
-
-    while (!ds.isEmpty())
+    try
     {
-        State currentState = ds.extract();
-        
-        if (currentState.isFinalState())
-        {
-            initialState.path = currentState.path;
+        maxDepth = duplicatedNodes = solutionDepth = solved = 0;
+        visited.clear();
 
-            solve(initialState);
-            return;
-        }
+        ds.add(initialState);
 
-        for (int i = 0; i < 4; i++)
+        auto start = high_resolution_clock::now();
+
+        while (!ds.isEmpty())
         {
-            move(currentState.zeroPosition, i, currentState, ds);   
+            State currentState = ds.extract();
+            
+            maxDepth = max(maxDepth, currentState.depth);
+
+            if (currentState.isFinalState())
+            {
+                duration_time = duration_cast<microseconds>(high_resolution_clock::now() - start).count();
+
+                solutionDepth = currentState.depth;
+
+                solved = true;
+
+                initialState.path = currentState.path;
+
+                //solve(initialState);
+                return;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                move(currentState.zeroPosition, i, currentState, ds);   
+            }
         }
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
     }
 }
 
-void askInput(int grid[3][3])
+bool askInput(int grid[3][3])
 {
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
         {
-            cin >> grid[i][j];
+            if (cin.eof())
+            {
+                return false;
+            }
+            else 
+            {
+                cin >> grid[i][j];
+            }
         }
     }
+
+    return true;
 }
 
-int main()
+void printReport(State initialState, DataStructure &ds)
+{
+    search(initialState, ds);
+
+    cout << "STRUCTURE NAME: " << ds.name() << endl;
+    cout << "TIME: " << duration_time << endl;
+    cout << "BOUNDARY NODES: " << visited.size() << endl;
+    cout << "GENERATED NODES: " << visited.size() + duplicatedNodes << endl;
+    cout << "SOLUTION DEPTH: " << solutionDepth << endl;
+    cout << "MAXIMUM DEPTH: " << maxDepth << endl;
+    cout << "SOLVED: " << (solved ? "TRUE" : "FALSE") << endl << endl;
+}
+
+void report()
 {
     int grid[3][3] = {  {8, 3, 2},
                         {7, 4, 5},
                         {1, 6, 0}};
 
-    askInput(grid);
+    while (askInput(grid))
+    {
+        State initialState(grid);
 
-    State initialState(grid);
+        ASTAR dsAStar;
+        DFS dsDfs;
+        BFS dsBfs;
+        Greedy dsGreedy;
 
-    ASTAR ds;
+        printReport(initialState, {dsAStar});
+        printReport(initialState, {dsDfs});
+        printReport(initialState, {dsBfs});
+        printReport(initialState, {dsGreedy});
+    }
+}
 
-    search(initialState, {ds});
+int main()
+{
+    report();
 
     return 0;
 }
