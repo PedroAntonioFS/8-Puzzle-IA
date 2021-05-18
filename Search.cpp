@@ -17,6 +17,8 @@ unordered_set<string> visited;
 
 //Report
 ll duration_time;
+int duplicatedNodes, solutionDepth, maxDepth;
+bool solved;
 
 bool isValidPosition(pii position)
 {
@@ -40,7 +42,7 @@ void move(pii current, int i, State currentState, DataStructure &ds)
 
     if (visited.count(newState.key) || newState.depth > LIMIT_DEPTH)
     {
-        //TODO
+        duplicatedNodes++;
         return;
     }
 
@@ -105,30 +107,43 @@ void solve (State state)
 
 void search(State &initialState, DataStructure &ds)
 {
-    visited.clear();
-
-    ds.add(initialState);
-
-    auto start = high_resolution_clock::now();
-
-    while (!ds.isEmpty())
+    try
     {
-        State currentState = ds.extract();
-        
-        if (currentState.isFinalState())
+        visited.clear();
+
+        ds.add(initialState);
+
+        auto start = high_resolution_clock::now();
+
+        while (!ds.isEmpty())
         {
-            duration_time = duration_cast<microseconds>(high_resolution_clock::now() - start).count();
+            State currentState = ds.extract();
+            
+            maxDepth = max(maxDepth, currentState.depth);
 
-            initialState.path = currentState.path;
+            if (currentState.isFinalState())
+            {
+                duration_time = duration_cast<microseconds>(high_resolution_clock::now() - start).count();
 
-            solve(initialState);
-            return;
+                solutionDepth = currentState.depth;
+
+                solved = true;
+
+                initialState.path = currentState.path;
+
+                solve(initialState);
+                return;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                move(currentState.zeroPosition, i, currentState, ds);   
+            }
         }
-
-        for (int i = 0; i < 4; i++)
-        {
-            move(currentState.zeroPosition, i, currentState, ds);   
-        }
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
     }
 }
 
@@ -157,7 +172,12 @@ int main()
 
     search(initialState, {ds});
 
-    cerr << "TIME: " << duration_time << endl;
+    cout << "TIME: " << duration_time << endl;
+    cout << "BOUNDARY NODES: " << visited.size() << endl;
+    cout << "GENERATED NODES: " << visited.size() + duplicatedNodes << endl;
+    cout << "SOLUTION DEPTH: " << solutionDepth << endl;
+    cout << "MAXIMUM DEPTH: " << maxDepth << endl;
+    cout << "SOLVED: " << solved << endl;
 
     return 0;
 }
