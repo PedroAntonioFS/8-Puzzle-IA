@@ -2,6 +2,7 @@
 #include "DataStructure.h"
 #define pii pair<int, int>
 #define LIMIT_DEPTH  500
+#define ll long long
 
 using namespace std;
 using namespace std::this_thread;
@@ -12,6 +13,10 @@ int dy[] = {1, -1, 0, 0};
 Moves moves[] = {Left, Right, Top, Down};
 
 unordered_set<string> visited;
+
+
+//Report
+ll duration_time;
 
 bool isValidPosition(pii position)
 {
@@ -104,12 +109,16 @@ void search(State &initialState, DataStructure &ds)
 
     ds.add(initialState);
 
+    auto start = high_resolution_clock::now();
+
     while (!ds.isEmpty())
     {
         State currentState = ds.extract();
         
         if (currentState.isFinalState())
         {
+            duration_time = duration_cast<microseconds>(high_resolution_clock::now() - start).count();
+
             initialState.path = currentState.path;
 
             solve(initialState);
@@ -140,13 +149,15 @@ int main()
                         {7, 4, 5},
                         {1, 6, 0}};
 
-    askInput(grid);
+    //askInput(grid);
 
     State initialState(grid);
 
     ASTAR ds;
 
     search(initialState, {ds});
+
+    cerr << "TIME: " << duration_time << endl;
 
     return 0;
 }
