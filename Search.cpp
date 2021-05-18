@@ -150,7 +150,7 @@ void search(State &initialState, DataStructure &ds)
 
 bool askInput(int grid[3][3])
 {
-    cout << "Insira o jogo:\n" << endl;
+    cout << "Insert the 8-puzzle:\n" << endl;
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
@@ -194,7 +194,7 @@ void report()
 
         State initialState(grid);
         
-        cout << "Escolha uma opção:\n1 - Busca A*\n2 - DFS\n3 - BFS\n4 - Busca Gulosa\n";
+        cout << "Choice a option:\n1 - A* Search\n2 - DFS\n3 - BFS\n4 - Greedy Search\n";
         int choice;
         cin >> choice;
     
