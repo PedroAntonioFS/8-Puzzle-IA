@@ -132,7 +132,7 @@ void search(State &initialState, DataStructure &ds)
 
                 initialState.path = currentState.path;
 
-                //solve(initialState);
+                solve(initialState);
                 return;
             }
 
@@ -150,6 +150,7 @@ void search(State &initialState, DataStructure &ds)
 
 bool askInput(int grid[3][3])
 {
+    cout << "Insira o jogo:\n" << endl;
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
@@ -171,8 +172,9 @@ bool askInput(int grid[3][3])
 void printReport(State initialState, DataStructure &ds)
 {
     search(initialState, ds);
+    
 
-    cout << "STRUCTURE NAME: " << ds.name() << endl;
+    cout << "\nSTRUCTURE NAME: " << ds.name() << endl;
     cout << "TIME: " << duration_time << endl;
     cout << "BOUNDARY NODES: " << visited.size() << endl;
     cout << "GENERATED NODES: " << visited.size() + duplicatedNodes << endl;
@@ -188,18 +190,37 @@ void report()
                         {1, 6, 0}};
 
     while (askInput(grid))
-    {
-        State initialState(grid);
+    {   
 
+        State initialState(grid);
+        
+        cout << "Escolha uma opção:\n1 - Busca A*\n2 - DFS\n3 - BFS\n4 - Busca Gulosa\n";
+        int choice;
+        cin >> choice;
+    
         ASTAR dsAStar;
         DFS dsDfs;
         BFS dsBfs;
         Greedy dsGreedy;
 
-        printReport(initialState, {dsAStar});
-        printReport(initialState, {dsDfs});
-        printReport(initialState, {dsBfs});
-        printReport(initialState, {dsGreedy});
+        switch (choice)
+        {
+        case 1:
+            printReport(initialState, {dsAStar});
+            break;
+        case 2:
+            printReport(initialState, {dsDfs});
+            break;
+        case 3:
+            printReport(initialState, {dsBfs});
+            break;
+        case 4:
+            printReport(initialState, {dsGreedy});
+            break;
+        default:
+            break;
+        }
+
     }
 }
 
