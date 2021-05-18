@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include "DataStructure.h"
 #define pii pair<int, int>
+#define LIMIT_DEPTH  500
 
 using namespace std;
 using namespace std::this_thread;
@@ -32,7 +33,7 @@ void move(pii current, int i, State currentState, DataStructure &ds)
     newState.depth = currentState.depth + 1;
     newState.cost = ds.cost(newState);
 
-    if (visited.count(newState.key))
+    if (visited.count(newState.key) || newState.depth > LIMIT_DEPTH)
     {
         //TODO
         return;
@@ -102,8 +103,6 @@ void search(State &initialState, DataStructure &ds)
     visited.clear();
 
     ds.add(initialState);
-
-    unordered_set<string> visited;
 
     while (!ds.isEmpty())
     {
