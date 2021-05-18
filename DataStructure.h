@@ -173,6 +173,41 @@ public:
     State extract()
     {
         auto head = ds.front();
+
+        ds.pop();
+        return head;
+    }
+
+    int size ()
+    {
+        return ds.size();
+    }
+
+    bool isEmpty()
+    {
+        return ds.empty();
+    }
+
+    int cost(State state)
+    {
+        return state.depth;
+    }
+};
+
+class DFS : public DataStructure
+{
+public:
+    stack<State> ds;
+
+    void add(State state) 
+    {
+        ds.push(state);
+    }
+    
+    State extract()
+    {
+        auto head = ds.top();
+
         ds.pop();
         return head;
     }
