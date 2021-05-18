@@ -109,6 +109,7 @@ void search(State &initialState, DataStructure &ds)
 {
     try
     {
+        maxDepth = duplicatedNodes = solutionDepth = solved = 0;
         visited.clear();
 
         ds.add(initialState);
@@ -131,7 +132,7 @@ void search(State &initialState, DataStructure &ds)
 
                 initialState.path = currentState.path;
 
-                solve(initialState);
+                //solve(initialState);
                 return;
             }
 
@@ -147,37 +148,64 @@ void search(State &initialState, DataStructure &ds)
     }
 }
 
-void askInput(int grid[3][3])
+bool askInput(int grid[3][3])
 {
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
         {
-            cin >> grid[i][j];
+            if (cin.eof())
+            {
+                return false;
+            }
+            else 
+            {
+                cin >> grid[i][j];
+            }
         }
     }
+
+    return true;
 }
 
-int main()
+void printReport(State initialState, DataStructure &ds)
 {
-    int grid[3][3] = {  {8, 3, 2},
-                        {7, 4, 5},
-                        {1, 6, 0}};
+    search(initialState, ds);
 
-    //askInput(grid);
-
-    State initialState(grid);
-
-    ASTAR ds;
-
-    search(initialState, {ds});
-
+    cout << "STRUCTURE NAME: " << ds.name() << endl;
     cout << "TIME: " << duration_time << endl;
     cout << "BOUNDARY NODES: " << visited.size() << endl;
     cout << "GENERATED NODES: " << visited.size() + duplicatedNodes << endl;
     cout << "SOLUTION DEPTH: " << solutionDepth << endl;
     cout << "MAXIMUM DEPTH: " << maxDepth << endl;
-    cout << "SOLVED: " << solved << endl;
+    cout << "SOLVED: " << (solved ? "TRUE" : "FALSE") << endl << endl;
+}
+
+void report()
+{
+    int grid[3][3] = {  {8, 3, 2},
+                        {7, 4, 5},
+                        {1, 6, 0}};
+
+    while (askInput(grid))
+    {
+        State initialState(grid);
+
+        ASTAR dsAStar;
+        DFS dsDfs;
+        BFS dsBfs;
+        Greedy dsGreedy;
+
+        printReport(initialState, {dsAStar});
+        printReport(initialState, {dsDfs});
+        printReport(initialState, {dsBfs});
+        printReport(initialState, {dsGreedy});
+    }
+}
+
+int main()
+{
+    report();
 
     return 0;
 }
